@@ -21,15 +21,20 @@ fetch('/api/members')
 fetch('https://your-backend.onrender.com/members')
 ```
 
-### **STEP 2: Backend (Render - Node)**
+### **STEP 2: Backend (Render - FIXED)**
 ```
 1. Go to https://render.com → Sign up (GitHub)
-2. "New → Web Service" → Connect GitHub repo
-3. Settings:
-   Build: `npm install`
-   Start: `npm start`
-4. Deploy → LIVE API! (https://your-backend.onrender.com)
+2. "New → Web Service" → Connect GitHub repo (backend folder)
+3. **Render Settings** (CRITICAL):
+   - Name: `gym-api`
+   - Environment: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+4. Connect repo → Deploy → ✅ LIVE!
+
+**API URL**: https://gym-api-yourname.onrender.com/members
 ```
+**Redeploy**: Render detects changes → auto-deploys!
 
 ### **TEST DEPLOYED:**
 ```
