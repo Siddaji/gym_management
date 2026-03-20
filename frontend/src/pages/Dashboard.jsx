@@ -15,7 +15,7 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch(' https://gym-management-1-ja9o.onrender.com/members');
+      const response = await fetch('https://gym-management-1-ja9o.onrender.com/members');
       const members = await response.json();
       
       const total = members.length;
