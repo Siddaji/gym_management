@@ -1,3 +1,4 @@
+
 const express = require('express');
 const cors = require('cors');
 
@@ -87,6 +88,31 @@ let members = [
     plan: "Quarterly",
     joinDate: "2024-10-01",
     expiryDate: "2025-01-01"
+  },
+  // Recent week added members
+  {
+    id: 11,
+    name: "Arjun Patel",
+    phone: "9876543220",
+    plan: "Monthly",
+    joinDate: "2024-11-20",
+    expiryDate: "2024-12-20"
+  },
+  {
+    id: 12,
+    name: "Pooja Singh",
+    phone: "9876543221",
+    plan: "Quarterly",
+    joinDate: "2024-11-22",
+    expiryDate: "2025-02-22"
+  },
+  {
+    id: 13,
+    name: "Rajesh Kumar",
+    phone: "9876543222",
+    plan: "Monthly",
+    joinDate: "2024-11-25",
+    expiryDate: "2024-12-25"
   }
 ];
 
@@ -104,5 +130,6 @@ app.post('/members', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
+  console.log(`Backend server running on port ${PORT}`);
 });
+

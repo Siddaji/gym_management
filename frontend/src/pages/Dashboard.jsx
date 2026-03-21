@@ -25,8 +25,9 @@ const Dashboard = () => {
       }).length;
       const expired = total - active;
       
-      // Mock new this week
-      const newThisWeek = 3;
+const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const newThisWeek = members.filter(member => new Date(member.joinDate) >= oneWeekAgo).length;
       
       setStats({ total, active, expired, newThisWeek });
     } catch (error) {
