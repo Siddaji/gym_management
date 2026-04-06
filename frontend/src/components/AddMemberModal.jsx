@@ -46,7 +46,7 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }) => {
               required
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
-              className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+              className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               placeholder="John Doe"
             />
           </div>
@@ -58,7 +58,7 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }) => {
               required
               value={formData.phone}
               onChange={(e) => setFormData({...formData, phone: e.target.value})}
-              className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+              className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               placeholder="9876543210"
             />
           </div>
@@ -69,7 +69,7 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }) => {
               required
               value={formData.plan}
               onChange={(e) => setFormData({...formData, plan: e.target.value})}
-              className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+              className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
             >
               <option value="Monthly">Monthly (₹999)</option>
               <option value="Quarterly">Quarterly (₹2499)</option>
@@ -84,7 +84,7 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }) => {
                 required
                 value={formData.joinDate}
                 onChange={(e) => setFormData({...formData, joinDate: e.target.value})}
-                className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
             <div>
@@ -94,7 +94,7 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }) => {
                 required
                 value={formData.expiryDate}
                 onChange={(e) => setFormData({...formData, expiryDate: e.target.value})}
-                className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all"
+                className="w-full px-4 py-3 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all"
               />
             </div>
           </div>
@@ -110,7 +110,7 @@ const AddMemberModal = ({ isOpen, onClose, onAddMember }) => {
             </button>
             <button
               type="submit"
-              className="flex-1 px-6 py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all shadow-sm text-sm sm:text-base"
+              className="flex-1 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all shadow-sm text-sm sm:text-base"
             >
               Add Member
             </button>

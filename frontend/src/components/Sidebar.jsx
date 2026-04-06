@@ -9,9 +9,16 @@ const Sidebar = ({ currentPage, setCurrentPage, isMobileMenuOpen, setIsMobileMen
       md:translate-x-0
     `}>
       <div className="p-6 border-b border-gray-200 h-full flex flex-col">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-1">GymPro</h1>
-          <p className="text-xs md:text-sm text-gray-500">Management Dashboard</p>
+<div className="flex items-center space-x-3 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+            <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            </svg>
+          </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">GymPro</h1>
+            <p className="text-xs md:text-sm text-gray-500 font-medium">Management Dashboard</p>
+          </div>
         </div>
         
         {/* Mobile Close Button */}
@@ -32,7 +39,7 @@ const Sidebar = ({ currentPage, setCurrentPage, isMobileMenuOpen, setIsMobileMen
             }}
             className={`w-full flex items-center py-3 px-4 rounded-xl mb-3 font-medium transition-all text-left ${
               currentPage === 'dashboard'
-                ? 'bg-primary-600 text-white shadow-md'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
             }`}
           >
@@ -48,7 +55,7 @@ const Sidebar = ({ currentPage, setCurrentPage, isMobileMenuOpen, setIsMobileMen
             }}
             className={`w-full flex items-center py-3 px-4 rounded-xl mb-3 font-medium transition-all text-left ${
               currentPage === 'members'
-                ? 'bg-primary-600 text-white shadow-md'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
             }`}
           >
@@ -56,6 +63,22 @@ const Sidebar = ({ currentPage, setCurrentPage, isMobileMenuOpen, setIsMobileMen
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
             Members
+          </button>
+          <button
+            onClick={() => {
+              setCurrentPage('attendance');
+              setIsMobileMenuOpen(false);
+            }}
+            className={`w-full flex items-center py-3 px-4 rounded-xl mb-3 font-medium transition-all text-left ${
+              currentPage === 'attendance'
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
+            }`}
+          >
+            <svg className="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-6 0H5a2 2 0 00-2 2v1a2 2 0 002 2h14a2 2 0 002-2v-1a2 2 0 00-2-2h-4" />
+            </svg>
+            Attendance
           </button>
         </nav>
       </div>

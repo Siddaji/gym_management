@@ -1,77 +1,74 @@
-# Gym Management Dashboard 🚀
+# GymPro - Gym Management Dashboard
 
-A clean, minimal dashboard demo for gym owners. Built with React + Tailwind (frontend) and Node.js + Express (backend).
+GymPro is a lightweight gym management dashboard built with React and Tailwind CSS. It provides member management, attendance tracking, and a clean dashboard experience backed by a simple Express API.
 
-## 🛠️ Tech Stack
-- **Frontend**: React (Vite) + Tailwind CSS
-- **Backend**: Node.js + Express (in-memory data)
+## Features
 
-## 🚀 Quick Start
+- Member directory with add and view capabilities
+- Attendance tracker for daily gym check-ins
+- Membership status and expiry indicators
+- Responsive layout for desktop and mobile
+- Local backend powered by Express
 
-### 1. Backend (Members API)
+## Tech Stack
+
+- Frontend: React 18, Vite, Tailwind CSS
+- Backend: Node.js, Express
+- Styling: Tailwind CSS and custom CSS utilities
+
+## Setup
+
+1. Start the backend:
+
 ```bash
 cd backend
 npm install
 npm start
 ```
-*Server runs on `http://localhost:3001`*
 
-### 2. Frontend (Dashboard)
+2. Start the frontend in a separate terminal:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-*App runs on `http://localhost:3000`*
 
-## 📱 Features
-- ✅ Dashboard with 4 key stats cards + chart
-- ✅ Members table (Active/Expired status)
-- ✅ Add new members via modal
-- ✅ Real-time status calculation
-- ✅ Responsive design
-- ✅ Clean, professional UI
+3. Open the app in your browser:
 
-## 🧪 Test Data
-- 10 sample members (mixed active/expired)
-- Backend auto-populates on startup
-
-## 🎨 UI Design
-- Modern sidebar navigation
-- Professional color scheme
-- Smooth hover effects
-- Mobile responsive
-
-## 🔄 Workflow
-1. Dashboard ← shows stats (calls `/api/members`)
-2. Members page ← full table + Add Member modal
-3. Add Member → POST `/api/members` → instant UI update
-4. Status auto-calculated (expiry date vs today)
-
-## 📁 File Structure
-```
-gym_management/
-├── backend/
-│   ├── package.json
-│   └── server.js
-├── frontend/
-│   ├── package.json
-│   ├── vite.config.js
-│   ├── index.html
-│   └── src/
-│       ├── components/ (Sidebar, StatsCard, MemberTable, AddMemberModal)
-│       ├── pages/ (Dashboard, Members)
-│       ├── App.jsx
-│       └── main.jsx
-└── README.md
+```bash
+http://localhost:3000
 ```
 
-## 🎯 Demo Flow
-1. Open `http://localhost:3000`
-2. See Dashboard stats
-3. Click **Members** → see table with status colors
-4. Click **Add Member** → fill form → see instant update!
+## API Proxy
 
----
+The frontend is configured to proxy API requests from `/api` to the backend running on `http://localhost:3001`.
 
-**Built for quick client demos. Ready to impress gym owners! 💪**
+## Available Scripts
+
+### Backend
+
+- `npm start`: Run the backend Express server
+- `npm run dev`: Run the backend with nodemon (if installed)
+
+### Frontend
+
+- `npm run dev`: Start the Vite development server
+- `npm run build`: Build the frontend for production
+- `npm run preview`: Preview the built frontend locally
+
+## Project Structure
+
+- `backend/` - Express API and mock member data
+- `frontend/` - React application built with Vite
+- `frontend/src/` - React components and pages
+- `frontend/src/index.css` - Tailwind and custom styles
+
+## Notes
+
+- The backend currently uses in-memory member data and resets on restart.
+- The project is designed as a local demo and can be extended with a database and authentication.
+
+## License
+
+MIT License
