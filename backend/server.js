@@ -1,135 +1,137 @@
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import Member from './models/Member.js';
 
-const express = require('express');
-const cors = require('cors');
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
-
-app.use(cors());
+const PORT = process.env.PORT || 3002; 
 app.use(express.json());
 
-let members = [
-  {
-    id: 1,
-    name: "Rahul Sharma",
-    phone: "9876543210",
-    plan: "Monthly",
-    joinDate: "2024-10-01",
-    expiryDate: "2024-11-01"
-  },
-  {
-    id: 2,
-    name: "Priya Patel",
-    phone: "9876543211",
-    plan: "Quarterly",
-    joinDate: "2024-09-01",
-    expiryDate: "2024-12-01"
-  },
-  {
-    id: 3,
-    name: "Amit Kumar",
-    phone: "9876543212",
-    plan: "Monthly",
-    joinDate: "2024-10-15",
-    expiryDate: "2024-11-15"
-  },
-  {
-    id: 4,
-    name: "Sneha Gupta",
-    phone: "9876543213",
-    plan: "Monthly",
-    joinDate: "2024-09-15",
-    expiryDate: "2024-10-15"
-  },
-  {
-    id: 5,
-    name: "Vikram Singh",
-    phone: "9876543214",
-    plan: "Quarterly",
-    joinDate: "2024-08-01",
-    expiryDate: "2024-11-01"
-  },
-  {
-    id: 6,
-    name: "Neha Desai",
-    phone: "9876543215",
-    plan: "Monthly",
-    joinDate: "2024-11-01",
-    expiryDate: "2024-12-01"
-  },
-  {
-    id: 7,
-    name: "Rohit Verma",
-    phone: "9876543216",
-    plan: "Monthly",
-    joinDate: "2024-10-20",
-    expiryDate: "2024-11-20"
-  },
-  {
-    id: 8,
-    name: "Anita Joshi",
-    phone: "9876543217",
-    plan: "Quarterly",
-    joinDate: "2024-07-01",
-    expiryDate: "2024-10-01"
-  },
-  {
-    id: 9,
-    name: "Karan Mehta",
-    phone: "9876543218",
-    plan: "Monthly",
-    joinDate: "2024-11-05",
-    expiryDate: "2025-12-05"
-  },
-  {
-    id: 10,
-    name: "Divya Reddy",
-    phone: "9876543219",
-    plan: "Quarterly",
-    joinDate: "2024-10-01",
-    expiryDate: "2025-01-01"
-  },
-  // Recent week added members
-  {
-    id: 11,
-    name: "Arjun Patel",
-    phone: "9876543220",
-    plan: "Monthly",
-    joinDate: "2024-11-20",
-    expiryDate: "2024-12-20"
-  },
-  {
-    id: 12,
-    name: "Pooja Singh",
-    phone: "9876543221",
-    plan: "Quarterly",
-    joinDate: "2024-11-22",
-    expiryDate: "2025-02-22"
-  },
-  {
-    id: 13,
-    name: "Rajesh Kumar",
-    phone: "9876543222",
-    plan: "Monthly",
-    joinDate: "2024-11-25",
-    expiryDate: "2024-12-25"
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.log('❌ MongoDB connection error:', err));
+
+
+// GET all members
+app.get('/api/members', async (req, res) => {
+  try {
+    const members = await Member.find();
+    res.json(members);
+  } catch (error) {
+    console.error('Error fetching members:', error);
+    res.status(500).json({ error: 'Failed to fetch members' });
   }
-];
-
-app.get('/members', (req, res) => {
-  res.json(members);
 });
 
-app.post('/members', (req, res) => {
-  const newMember = {
-    id: members.length + 1,
-    ...req.body
-  };
-  members.push(newMember);
-  res.status(201).json(newMember);
+// POST - Add new member
+app.post('/api/members', async (req, res) => {
+  try {
+    const { name, phone, plan, joinDate, expiryDate } = req.body;
+    
+    const newMember = new Member({
+      name,
+      phone,
+      plan,
+      joinDate,
+      expiryDate
+    });
+    
+    const saved = await newMember.save();
+    res.status(201).json(saved);
+  } catch (error) {
+    console.error('Error adding member:', error);
+    res.status(500).json({ error: 'Failed to add member' });
+  }
 });
+
+// PUT - Update member
+app.put('/api/members/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, phone, plan, joinDate, expiryDate } = req.body;
+    
+    const updated = await Member.findByIdAndUpdate(
+      id,
+      { name, phone, plan, joinDate, expiryDate },
+      { new: true }
+    );
+    
+    if (!updated) {
+      return res.status(404).json({ error: 'Member not found' });
+    }
+    
+    res.json(updated);
+  } catch (error) {
+    console.error('Error updating member:', error);
+    res.status(500).json({ error: 'Failed to update member' });
+  }
+});
+
+// DELETE - Remove member
+app.delete('/api/members/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const deleted = await Member.findByIdAndDelete(id);
+    
+    if (!deleted) {
+      return res.status(404).json({ error: 'Member not found' });
+    }
+    
+    res.json({ message: 'Member deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting member:', error);
+    res.status(500).json({ error: 'Failed to delete member' });
+  }
+});
+
+// ============= SEED DATA (Optional - only runs once) =============
+
+// This will populate initial data if the collection is empty
+const seedMembers = async () => {
+  try {
+    const count = await Member.countDocuments();
+    if (count === 0) {
+      const initialMembers = [
+        {
+          name: "Rahul Sharma",
+          phone: "9876543210",
+          plan: "Monthly",
+          joinDate: new Date("2024-10-01"),
+          expiryDate: new Date("2024-11-01")
+        },
+        {
+          name: "Priya Patel",
+          phone: "9876543211",
+          plan: "Quarterly",
+          joinDate: new Date("2024-09-01"),
+          expiryDate: new Date("2024-12-01")
+        },
+        {
+          name: "Amit Kumar",
+          phone: "9876543212",
+          plan: "Monthly",
+          joinDate: new Date("2024-10-15"),
+          expiryDate: new Date("2024-11-15")
+        }
+      ];
+      await Member.insertMany(initialMembers);
+      console.log('✅ Initial members seeded');
+    }
+  } catch (error) {
+    console.error('Seeding error:', error);
+  }
+};
+
+seedMembers();
+
+// ============= SERVER START =============
 
 app.listen(PORT, () => {
-  console.log(`Backend server running on port ${PORT}`);
+  console.log(`✅ Backend server running on port ${PORT}`);
 });
 
