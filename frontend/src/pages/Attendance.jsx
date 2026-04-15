@@ -1,16 +1,17 @@
 import React from 'react';
 import { useMembers } from '../hooks/useStorage';
-import { useAttendance } from '../hooks/useStorage';
+import { logAttendance, getAttendanceCount, getTodayAttendance } from '../utils/storage';
 
 const Attendance = () => {
   const { members, isLoading: membersLoading } = useMembers();
-  const { logAttendance, getCount, getTodayCount } = useAttendance();
 
-  const todayAttendance = getTodayCount();
+  const todayAttendance = getTodayAttendance();
   const isLoading = membersLoading;
 
   const handleCheckIn = (memberId) => {
     logAttendance(memberId);
+    // Force page refresh to show updated count
+    window.location.reload();
   };
 
   if (isLoading) {
@@ -39,20 +40,20 @@ const Attendance = () => {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {members.map((member) => (
-              <div key={member.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div key={member._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between gap-4 mb-3">
                   <div>
                     <p className="font-medium text-gray-900">{member.name}</p>
                     <p className="text-sm text-gray-500">{member.phone}</p>
                   </div>
                   <button
-                    onClick={() => handleCheckIn(member.id)}
+                    onClick={() => handleCheckIn(member._id)}
                     className="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors"
                   >
                     Check-in
                   </button>
                 </div>
-                <p className="text-sm text-gray-600">Total check-ins: {getCount(member.id)}</p>
+                <p className="text-sm text-gray-600">Total check-ins: {getAttendanceCount(member._id)}</p>
               </div>
             ))}
           </div>
@@ -63,4 +64,3 @@ const Attendance = () => {
 };
 
 export default Attendance;
-

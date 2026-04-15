@@ -14,7 +14,7 @@ import {
 } from '../utils/storage';
 
 /**
- * Hook for managing members with localStorage persistence
+ * Hook for managing members with backend API persistence
  */
 export const useMembers = () => {
   const [members, setMembers] = useState([]);
@@ -22,39 +22,62 @@ export const useMembers = () => {
 
   // Load members on mount
   useEffect(() => {
-    const loadMembers = () => {
-      const stored = getMembers();
-      setMembers(stored);
-      setIsLoading(false);
+    const loadMembers = async () => {
+      try {
+        const stored = await getMembers();
+        setMembers(stored);
+      } catch (error) {
+        console.error('Failed to load members:', error);
+        setMembers([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
     loadMembers();
   }, []);
 
-  const addMember = useCallback((memberData) => {
-    const newMember = addMemberToStorage(memberData);
-    if (newMember) {
-      setMembers(prev => [...prev, newMember]);
-      return newMember;
+  const addMember = useCallback(async (memberData) => {
+    try {
+      const newMember = await addMemberToStorage(memberData);
+      if (newMember) {
+        setMembers(prev => [...prev, newMember]);
+        return newMember;
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to add member:', error);
+      return null;
     }
-    return null;
   }, []);
 
-  const deleteMember = useCallback((memberId) => {
-    if (deleteMemberFromStorage(memberId)) {
-      setMembers(prev => prev.filter(m => m.id !== memberId));
-      return true;
+  const deleteMember = useCallback(async (memberId) => {
+    try {
+      const success = await deleteMemberFromStorage(memberId);
+      if (success) {
+        setMembers(prev => prev.filter(m => m._id !== memberId));
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to delete member:', error);
+      return false;
     }
-    return false;
   }, []);
 
-  const updateMember = useCallback((memberId, updates) => {
-    if (updateMemberInStorage(memberId, updates)) {
-      setMembers(prev =>
-        prev.map(m => m.id === memberId ? { ...m, ...updates } : m)
-      );
-      return true;
+  const updateMember = useCallback(async (memberId, updates) => {
+    try {
+      const success = await updateMemberInStorage(memberId, updates);
+      if (success) {
+        setMembers(prev =>
+          prev.map(m => m._id === memberId ? { ...m, ...updates } : m)
+        );
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Failed to update member:', error);
+      return false;
     }
-    return false;
   }, []);
 
   return {
@@ -123,17 +146,26 @@ export const useStats = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadStats = () => {
-      const calculated = calculateStats();
-      setStats(calculated);
-      setIsLoading(false);
+    const loadStats = async () => {
+      try {
+        const calculated = await calculateStats();
+        setStats(calculated);
+      } catch (error) {
+        console.error('Failed to calculate stats:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     loadStats();
   }, []);
 
-  const refresh = useCallback(() => {
-    const calculated = calculateStats();
-    setStats(calculated);
+  const refresh = useCallback(async () => {
+    try {
+      const calculated = await calculateStats();
+      setStats(calculated);
+    } catch (error) {
+      console.error('Failed to refresh stats:', error);
+    }
   }, []);
 
   return {

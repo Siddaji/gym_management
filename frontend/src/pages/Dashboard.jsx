@@ -32,7 +32,7 @@ const Dashboard = () => {
         ) : (
           <div className="divide-y divide-gray-200">
             {members.slice(0, 5).map((member) => (
-              <div key={member.id} className="py-3 flex items-center justify-between">
+              <div key={member._id} className="py-3 flex items-center justify-between">
                 <div>
                   <p className="font-medium text-gray-900">{member.name}</p>
                   <p className="text-sm text-gray-500">{member.phone}</p>

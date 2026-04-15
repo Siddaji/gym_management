@@ -42,7 +42,7 @@ const MemberTable = ({ members, onDelete }) => {
         </thead>
         <tbody className="divide-y divide-gray-200 bg-white">
           {members.map((member) => (
-            <tr key={member.id} className="hover:bg-gray-50">
+            <tr key={member._id} className="hover:bg-gray-50">
               <td className="px-6 py-4 text-sm font-medium text-gray-900">{member.name}</td>
               <td className="px-6 py-4 text-sm text-gray-600">{member.phone}</td>
               <td className="px-6 py-4 text-sm text-gray-600">{member.plan}</td>
@@ -56,7 +56,7 @@ const MemberTable = ({ members, onDelete }) => {
               <td className="px-6 py-4">
                 {onDelete && (
                   <button
-                    onClick={() => onDelete(member.id)}
+                    onClick={() => onDelete(member._id)}
                     className="text-red-600 hover:text-red-800 font-medium text-sm"
                   >
                     Delete

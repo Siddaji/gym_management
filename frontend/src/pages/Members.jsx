@@ -7,14 +7,14 @@ const Members = () => {
   const { members, isLoading, addMember, deleteMember } = useMembers();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleAddMember = (formData) => {
-    addMember(formData);
+  const handleAddMember = async (formData) => {
+    await addMember(formData);
     setIsModalOpen(false);
   };
 
-  const handleDeleteMember = (memberId) => {
+  const handleDeleteMember = async (memberId) => {
     if (window.confirm('Are you sure you want to delete this member?')) {
-      deleteMember(memberId);
+      await deleteMember(memberId);
     }
   };
 

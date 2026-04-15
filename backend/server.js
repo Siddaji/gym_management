@@ -1,47 +1,69 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import Member from './models/Member.js';
-
-dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3002; 
+const PORT = process.env.PORT || 3001;
+
+app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch((err) => console.log('❌ MongoDB connection error:', err));
+// In-memory storage (temporary - will add MongoDB later)
+let members = [
+  {
+    _id: '1',
+    name: "Rahul Sharma",
+    phone: "9876543210",
+    plan: "Monthly",
+    joinDate: "2024-10-01",
+    expiryDate: "2024-11-01"
+  },
+  {
+    _id: '2',
+    name: "Priya Patel",
+    phone: "9876543211",
+    plan: "Quarterly",
+    joinDate: "2024-09-01",
+    expiryDate: "2024-12-01"
+  },
+  {
+    _id: '3',
+    name: "Amit Kumar",
+    phone: "9876543212",
+    plan: "Monthly",
+    joinDate: "2024-10-15",
+    expiryDate: "2024-11-15"
+  }
+];
 
+let nextId = 4;
+
+// ============= API ROUTES =============
 
 // GET all members
-app.get('/api/members', async (req, res) => {
-  try {
-    const members = await Member.find();
-    res.json(members);
-  } catch (error) {
-    console.error('Error fetching members:', error);
-    res.status(500).json({ error: 'Failed to fetch members' });
-  }
+app.get('/api/members', (req, res) => {
+  res.json(members);
 });
 
 // POST - Add new member
-app.post('/api/members', async (req, res) => {
+app.post('/api/members', (req, res) => {
   try {
     const { name, phone, plan, joinDate, expiryDate } = req.body;
     
-    const newMember = new Member({
+    if (!name || !phone || !plan || !joinDate || !expiryDate) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const newMember = {
+      _id: String(nextId++),
       name,
       phone,
       plan,
       joinDate,
       expiryDate
-    });
+    };
     
-    const saved = await newMember.save();
-    res.status(201).json(saved);
+    members.push(newMember);
+    res.status(201).json(newMember);
   } catch (error) {
     console.error('Error adding member:', error);
     res.status(500).json({ error: 'Failed to add member' });
@@ -49,22 +71,24 @@ app.post('/api/members', async (req, res) => {
 });
 
 // PUT - Update member
-app.put('/api/members/:id', async (req, res) => {
+app.put('/api/members/:id', (req, res) => {
   try {
     const { id } = req.params;
     const { name, phone, plan, joinDate, expiryDate } = req.body;
     
-    const updated = await Member.findByIdAndUpdate(
-      id,
-      { name, phone, plan, joinDate, expiryDate },
-      { new: true }
-    );
+    const member = members.find(m => m._id === id);
     
-    if (!updated) {
+    if (!member) {
       return res.status(404).json({ error: 'Member not found' });
     }
     
-    res.json(updated);
+    if (name) member.name = name;
+    if (phone) member.phone = phone;
+    if (plan) member.plan = plan;
+    if (joinDate) member.joinDate = joinDate;
+    if (expiryDate) member.expiryDate = expiryDate;
+    
+    res.json(member);
   } catch (error) {
     console.error('Error updating member:', error);
     res.status(500).json({ error: 'Failed to update member' });
@@ -72,66 +96,27 @@ app.put('/api/members/:id', async (req, res) => {
 });
 
 // DELETE - Remove member
-app.delete('/api/members/:id', async (req, res) => {
+app.delete('/api/members/:id', (req, res) => {
   try {
     const { id } = req.params;
+    const index = members.findIndex(m => m._id === id);
     
-    const deleted = await Member.findByIdAndDelete(id);
-    
-    if (!deleted) {
+    if (index === -1) {
       return res.status(404).json({ error: 'Member not found' });
     }
     
-    res.json({ message: 'Member deleted successfully' });
+    const deleted = members.splice(index, 1);
+    res.json({ message: 'Member deleted successfully', member: deleted[0] });
   } catch (error) {
     console.error('Error deleting member:', error);
     res.status(500).json({ error: 'Failed to delete member' });
   }
 });
 
-// ============= SEED DATA (Optional - only runs once) =============
-
-// This will populate initial data if the collection is empty
-const seedMembers = async () => {
-  try {
-    const count = await Member.countDocuments();
-    if (count === 0) {
-      const initialMembers = [
-        {
-          name: "Rahul Sharma",
-          phone: "9876543210",
-          plan: "Monthly",
-          joinDate: new Date("2024-10-01"),
-          expiryDate: new Date("2024-11-01")
-        },
-        {
-          name: "Priya Patel",
-          phone: "9876543211",
-          plan: "Quarterly",
-          joinDate: new Date("2024-09-01"),
-          expiryDate: new Date("2024-12-01")
-        },
-        {
-          name: "Amit Kumar",
-          phone: "9876543212",
-          plan: "Monthly",
-          joinDate: new Date("2024-10-15"),
-          expiryDate: new Date("2024-11-15")
-        }
-      ];
-      await Member.insertMany(initialMembers);
-      console.log('✅ Initial members seeded');
-    }
-  } catch (error) {
-    console.error('Seeding error:', error);
-  }
-};
-
-seedMembers();
-
 // ============= SERVER START =============
 
 app.listen(PORT, () => {
   console.log(`✅ Backend server running on port ${PORT}`);
+  console.log(`📍 API: http://localhost:${PORT}/api/members`);
 });
 

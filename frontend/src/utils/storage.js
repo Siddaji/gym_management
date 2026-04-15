@@ -9,58 +9,47 @@ const DEFAULT_STATE = {
   attendance: {},
 };
 
-/**
- * Get all members from localStorage
- * Returns empty array if no data exists
- */
-export const getMembers = () => {
+const API_BASE_URL = 'http://localhost:3001';
+
+// ============= MEMBERS API CALLS =============
+
+export const getMembers = async () => {
   try {
-    const stored = localStorage.getItem(STORAGE_KEYS.MEMBERS);
-    return stored ? JSON.parse(stored) : DEFAULT_STATE.members;
+    const response = await fetch(`${API_BASE_URL}/api/members`);
+    if (!response.ok) throw new Error('Failed to fetch members');
+    return await response.json();
   } catch (error) {
-    console.error('Error reading members from storage:', error);
-    return DEFAULT_STATE.members;
+    console.error('Error fetching members:', error);
+    return [];
   }
 };
 
-/**
- * Save members to localStorage
- */
-export const saveMembers = (members) => {
-  try {
-    localStorage.setItem(STORAGE_KEYS.MEMBERS, JSON.stringify(members || []));
-  } catch (error) {
-    console.error('Error saving members to storage:', error);
-  }
+export const saveMembers = async (members) => {
+  // Not needed with backend API
+  console.log('saveMembers called (not needed)');
 };
 
-/**
- * Add a new member to localStorage
- */
-export const addMember = (member) => {
+export const addMember = async (member) => {
   try {
-    const members = getMembers();
-    const newMember = {
-      ...member,
-      id: member.id || Date.now(),
-    };
-    const updated = [...members, newMember];
-    saveMembers(updated);
-    return newMember;
+    const response = await fetch(`${API_BASE_URL}/api/members`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(member),
+    });
+    if (!response.ok) throw new Error('Failed to add member');
+    return await response.json();
   } catch (error) {
     console.error('Error adding member:', error);
     return null;
   }
 };
 
-/**
- * Delete a member from localStorage
- */
-export const deleteMember = (memberId) => {
+export const deleteMember = async (memberId) => {
   try {
-    const members = getMembers();
-    const updated = members.filter(m => m.id !== memberId);
-    saveMembers(updated);
+    const response = await fetch(`${API_BASE_URL}/api/members/${memberId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) throw new Error('Failed to delete member');
     return true;
   } catch (error) {
     console.error('Error deleting member:', error);
@@ -68,16 +57,14 @@ export const deleteMember = (memberId) => {
   }
 };
 
-/**
- * Update a member in localStorage
- */
-export const updateMember = (memberId, updates) => {
+export const updateMember = async (memberId, updates) => {
   try {
-    const members = getMembers();
-    const updated = members.map(m =>
-      m.id === memberId ? { ...m, ...updates } : m
-    );
-    saveMembers(updated);
+    const response = await fetch(`${API_BASE_URL}/api/members/${memberId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates),
+    });
+    if (!response.ok) throw new Error('Failed to update member');
     return true;
   } catch (error) {
     console.error('Error updating member:', error);
@@ -85,10 +72,8 @@ export const updateMember = (memberId, updates) => {
   }
 };
 
-/**
- * Get all attendance records from localStorage
- * Returns empty object if no data exists
- */
+// ============= ATTENDANCE (localStorage for now) =============
+
 export const getAttendance = () => {
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.ATTENDANCE);
@@ -99,9 +84,6 @@ export const getAttendance = () => {
   }
 };
 
-/**
- * Save attendance records to localStorage
- */
 export const saveAttendance = (attendance) => {
   try {
     localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(attendance || {}));
@@ -110,15 +92,10 @@ export const saveAttendance = (attendance) => {
   }
 };
 
-/**
- * Log attendance for a member on a specific date
- */
 export const logAttendance = (memberId, date = new Date().toISOString().split('T')[0]) => {
   try {
     const attendance = getAttendance();
     const memberRecords = attendance[memberId] || [];
-    
-    // Avoid duplicate entries for the same date
     if (!memberRecords.includes(date)) {
       memberRecords.push(date);
       attendance[memberId] = memberRecords;
@@ -131,9 +108,6 @@ export const logAttendance = (memberId, date = new Date().toISOString().split('T
   }
 };
 
-/**
- * Get attendance count for a member
- */
 export const getAttendanceCount = (memberId) => {
   try {
     const attendance = getAttendance();
@@ -144,9 +118,6 @@ export const getAttendanceCount = (memberId) => {
   }
 };
 
-/**
- * Get today's attendance count
- */
 export const getTodayAttendance = () => {
   try {
     const today = new Date().toISOString().split('T')[0];
@@ -162,16 +133,15 @@ export const getTodayAttendance = () => {
   }
 };
 
-/**
- * Calculate dashboard stats from stored data
- */
-export const calculateStats = () => {
+// ============= STATS CALCULATION =============
+
+export const calculateStats = async (members) => {
   try {
-    const members = getMembers();
+    const membersList = members || await getMembers();
     const today = new Date();
     
-    const total = members.length;
-    const active = members.filter(member => {
+    const total = membersList.length;
+    const active = membersList.filter(member => {
       const expiry = new Date(member.expiryDate);
       return !Number.isNaN(expiry.getTime()) && expiry >= today;
     }).length;
@@ -179,7 +149,7 @@ export const calculateStats = () => {
     
     const oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    const newThisWeek = members.filter(member => {
+    const newThisWeek = membersList.filter(member => {
       const joinDate = new Date(member.joinDate);
       return !Number.isNaN(joinDate.getTime()) && joinDate >= oneWeekAgo;
     }).length;
@@ -205,9 +175,6 @@ export const calculateStats = () => {
   }
 };
 
-/**
- * Clear all stored data (for testing/reset)
- */
 export const clearAllData = () => {
   try {
     localStorage.removeItem(STORAGE_KEYS.MEMBERS);
