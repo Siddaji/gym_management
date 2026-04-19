@@ -2,6 +2,10 @@
 
 GymPro is a lightweight gym management dashboard built with React and Tailwind CSS. It provides member management, attendance tracking, and a clean dashboard experience backed by a simple Express API.
 
+## Live Demo
+
+[View Live Demo](https://gym-members-management.vercel.app)
+
 ## Features
 
 - Member directory with add and view capabilities
